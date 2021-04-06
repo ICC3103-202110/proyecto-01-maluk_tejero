@@ -28,7 +28,8 @@ class Coup(Action):
 
 
 class Duke(Action):
-    name = "Duke - Tax"
+    name = "Duke"
+    action = "Tax"
     description = "Take 3 coins."
     blocks = "Foreing Aid"
 
@@ -37,30 +38,26 @@ class Duke(Action):
 
 
 class Assassin(Action):
-    name = "Assassin - Assassinate"
+    name = "Assassin"
+    action = "Assassinate"
     description = "Pay 3 coins, choose player to lose influence"
     coinsRequired = 3
 
 
 class Ambassador(Action):
-    name = "Ambassador - Exchange"
+    name = "Ambassador"
+    action = "Exchange"
     description = "Exchange cards with Court Deck"
-    blocks = "Captain - Steal"
+    blocks = "Captain"
 
 
 class Captain(Action):
-    name = "Captain - Steal"
+    name = "Captain"
+    action = "Steal"
     description = "Take 2 coins from another player"
     blocks = "Captain - Steal"
-
-    def play(self, player, target = None):
-        if target == None:
-            raise None
-
-        steal = 0
-        if target.coins >=
 
 
 class Countess(Action):
     name = "Countess"
-    blocks = "Assassin - Assassinate"
+    blocks = "Assassin"
