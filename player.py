@@ -2,6 +2,7 @@ class Player:
     def __init__(self, name):
         self.__name = name
         self.__coins = 2
+        self.__cards = []
     
     @property
     def name(self):
@@ -17,3 +18,11 @@ class Player:
             self.__coins = 0
         else:
             self.__coins += value
+    
+    @property
+    def cards(self):
+        return self.__cards
+    
+    @cards.setter
+    def cards(self, card)
+        cards.append(card)
