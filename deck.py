@@ -1,4 +1,4 @@
-from actions import Duke, Assassin, Ambassador, Captain, Countess
+from actions import Duke, Assassin, Ambassador, Captain, Countess, Hidden
 from random import shuffle
 
 class Deck:
@@ -8,7 +8,7 @@ class Deck:
     
 
     def build(self):
-        for i in [Duke.name, Assassin.name, Ambassador.name, Captain.name, Countess.name]:
+        for i in [Duke, Assassin, Ambassador, Captain, Countess]:
             for j in range(3):
                 self.cards.append(i)
     
@@ -19,10 +19,13 @@ class Deck:
 
     def show_deck(self):
         for i in self.cards:
-            print(i)
+            print(i.name)
     
     
     def draw_card(self):
         card = self.cards[0]
         self.cards.pop(0)
         return card
+    
+    def hide(self):
+        return Hidden

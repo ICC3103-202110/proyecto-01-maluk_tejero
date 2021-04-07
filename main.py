@@ -6,9 +6,9 @@ players = []
 
 def print_menu_and_select():
     print("\nSelecciona una de las siguientes opciones:")
-    print("1. Create deck")
-    print("2. Create players")
-    print("3. Show players")
+    print("1. Start game")
+    print("2. Show players")
+    print("3. None")
     print('4. None')
     print("0. Exit")
     return int(input())
@@ -17,8 +17,8 @@ def print_menu_and_select():
 def create_deck():
     deck = Deck()
     deck.shuffle_deck()
-    deck.show_deck()
     return deck
+
 
 def create_player():
         name = str(input("What is your name?"))
@@ -36,14 +36,21 @@ def create_all_players(deck):
             card2 = deck.draw_card()
             player.add_card(card1)
             player.add_card(card2)
+            player.add_hidden_card(deck.hide())
+            player.add_hidden_card(deck.hide())
             players.append(player)
-        
+
 
 
 def show_players():
     print("\nPlayers:")
     for (i, _) in enumerate(players):
-        print(f"{i}: {players[i].name} - Coins: {players[i].coins} - Cards: {players[i].cards}")
+        card1 = players[i].cards[0]
+        card2 = players[i].cards[1]
+        players[i].reveal_card(0)
+        card1_h = players[i].hand[0]
+        card2_h =  players[i].hand[1]
+        print(f"{i}: {players[i].name} - Coins: {players[i].coins} - Cards: {card1.name}, {card2.name} - Hand: {card1_h.name}, {card2_h.name}")
 
 
 def menu():
@@ -53,12 +60,14 @@ def menu():
             break
         if selection == 1:
             deck = create_deck()
-        if selection == 2:
             create_all_players(deck)
-        if selection ==3:
+        if selection == 2:
             show_players()
+        if selection ==3:
+            pass
         if selection == 4:
             pass
-            
+
+
 if __name__ == '__main__':
     menu()

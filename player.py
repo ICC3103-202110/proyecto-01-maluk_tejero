@@ -1,10 +1,9 @@
-from deck import Deck
-
 class Player:
     def __init__(self, name):
         self.__name = name
         self.__coins = 2
         self.__cards = []
+        self.__hand = []
     
 
     @property
@@ -38,3 +37,21 @@ class Player:
     def add_card(self, card):
         self.cards.append(card)
     
+
+
+    @property
+    def hand(self):
+        return self.__hand
+
+
+    @hand.setter
+    def hand(self):
+        pass
+
+
+    def add_hidden_card(self, Hidden):
+        self.hand.append(Hidden)
+    
+
+    def reveal_card(self, position):
+        self.hand[position] = self.cards[position]

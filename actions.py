@@ -61,3 +61,8 @@ class Captain(Action):
 class Countess(Action):
     name = "Countess"
     blocks = "Assassin"
+
+
+class Hidden(Action):
+    name = "*"
+    description = "Hidden card"
