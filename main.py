@@ -53,9 +53,11 @@ def show_players():
 
 
 def show_player_open(player):
-    card1 = player[].cards[0]
-    card2 = player[].cards[1]
-    print(f"{player.name} - Coins: {players[i].coins} - Cards: {card1.name}, {card2.name}")
+    cards = ""
+    for pos in range(len(player.cards)):
+        cards += f"{player.cards[pos].name}, "
+    cards = cards[:-2]
+    print(f"{player.name} - Coins: {player.coins} - Cards: {cards}")
 
 
 

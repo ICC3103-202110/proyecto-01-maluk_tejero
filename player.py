@@ -39,7 +39,7 @@ class Player:
         self.cards.append(card)
     
     
-    def remove_card(self, position)
+    def remove_card(self, position):
         self.cards.pop(position)
     
 
