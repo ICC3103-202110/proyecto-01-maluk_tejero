@@ -4,6 +4,7 @@ class Player:
         self.__coins = 2
         self.__cards = []
         self.__hand = []
+        self.__alive = True
     
 
     @property
@@ -37,6 +38,10 @@ class Player:
     def add_card(self, card):
         self.cards.append(card)
     
+    
+    def remove_card(self, position)
+        self.cards.pop(position)
+    
 
 
     @property
@@ -55,3 +60,15 @@ class Player:
 
     def reveal_card(self, position):
         self.hand[position] = self.cards[position]
+    
+
+    @property
+    def alive(self):
+        return self.__alive
+    
+    @alive.setter
+    def alive(self):
+        pass
+
+    def kill_player(self):
+        self.alive = False

@@ -47,10 +47,16 @@ def show_players():
     for (i, _) in enumerate(players):
         card1 = players[i].cards[0]
         card2 = players[i].cards[1]
-        players[i].reveal_card(0)
         card1_h = players[i].hand[0]
         card2_h =  players[i].hand[1]
-        print(f"{i}: {players[i].name} - Coins: {players[i].coins} - Cards: {card1.name}, {card2.name} - Hand: {card1_h.name}, {card2_h.name}")
+        print(f"{i}: {players[i].name} - Coins: {players[i].coins} - Hand: {card1_h.name}, {card2_h.name}")
+
+
+def show_player_open(player):
+    card1 = player[].cards[0]
+    card2 = player[].cards[1]
+    print(f"{player.name} - Coins: {players[i].coins} - Cards: {card1.name}, {card2.name}")
+
 
 
 def menu():
