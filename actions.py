@@ -31,7 +31,7 @@ class Duke(Action):
     name = "Duke"
     action = "Tax"
     description = "Take 3 coins."
-    blocks = "Foreing Aid"
+    blocks = "Foreign Aid"
 
     def play(self, player):
         player.coins += 3
