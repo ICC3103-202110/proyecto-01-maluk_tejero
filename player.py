@@ -10,13 +10,12 @@ class Player:
     @property
     def name(self):
         return self.__name
-    
 
+ 
     @property
     def coins(self):
         return self.__coins
     
-
     @coins.setter
     def coins(self, value):
         if self.__coins + value < 0:
@@ -28,7 +27,6 @@ class Player:
     @property
     def cards(self):
         return self.__cards
-
 
     @cards.setter
     def cards(self):
@@ -43,11 +41,9 @@ class Player:
         self.cards.pop(position)
     
 
-
     @property
     def hand(self):
         return self.__hand
-
 
     @hand.setter
     def hand(self):
@@ -56,7 +52,7 @@ class Player:
 
     def add_hidden_card(self, Hidden):
         self.hand.append(Hidden)
-    
+
 
     def reveal_card(self, position):
         self.hand[position] = self.cards[position]
@@ -69,6 +65,7 @@ class Player:
     @alive.setter
     def alive(self):
         pass
+
 
     def kill_player(self):
         self.alive = False

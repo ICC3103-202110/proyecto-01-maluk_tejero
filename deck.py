@@ -3,9 +3,16 @@ from random import shuffle
 
 class Deck:
     def __init__(self):
-        self.cards = []
-        self.build()
+        self.__cards = []
+        
+    @property
+    def cards(self):
+        return self.__cards
     
+    @cards.setter
+    def cards(self, value):
+        pass
+
 
     def build(self):
         for i in [Duke, Assassin, Ambassador, Captain, Countess]:

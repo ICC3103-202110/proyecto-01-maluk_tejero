@@ -16,6 +16,7 @@ def print_menu_and_select():
 
 def create_deck():
     deck = Deck()
+    deck.build()
     deck.shuffle_deck()
     return deck
 
