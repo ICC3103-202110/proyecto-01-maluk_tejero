@@ -87,7 +87,7 @@ class Game:
         target = input(f"Choose your target")
         return target
     
-    def from_target_to_playerObject(self, target)
+    def from_target_to_playerObject(self, target):
         for player in players:
             if player.name == target:
                 return player

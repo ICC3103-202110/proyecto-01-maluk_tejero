@@ -46,7 +46,7 @@ class Assassin(Action):
     description = "Pay 3 coins, choose player to lose influence"
     coinsRequired = 3
 
-    def act(self, player, target)
+    def act(self, player, target):
         if player.coins >= self.coinsRequired:
             player.coins -= 3
             target.remove_card()
