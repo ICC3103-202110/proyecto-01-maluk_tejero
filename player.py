@@ -69,3 +69,10 @@ class Player:
 
     def kill_player(self):
         self.alive = False
+
+
+    def remove_card(self):
+        print(self.cards)
+        index = int(input(f"{list(range(len(cards)))}\n"))
+        self.cards.pop(index)
+        self.hand.pop(index)

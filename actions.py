@@ -9,16 +9,18 @@ class Income(Action):
     name = "Income"
     description = "The player gets a coin."
 
-    def play(self, player):
+    def act(self, player):
         player.coins += 1
+        print(f"{player.name} used Income, receives 1 coin.")
 
 
 class ForeignAid(Action):
     name = "Foreign Aid"
     description = "The player gets 2 coins (This action can be blocked by the Duke)."
     
-    def play(self, player):
+    def act(self, player):
         player.coins += 2
+        print(f"{player.name} receives 2 coins.")
 
 
 class Coup(Action):
@@ -33,8 +35,9 @@ class Duke(Action):
     description = "Take 3 coins."
     blocks = "Foreign Aid"
 
-    def play(self, player):
+    def act(self, player):
         player.coins += 3
+        print(f"{player.name} used Tax. He stole 3 coins.")
 
 
 class Assassin(Action):
@@ -43,6 +46,14 @@ class Assassin(Action):
     description = "Pay 3 coins, choose player to lose influence"
     coinsRequired = 3
 
+    def act(self, player, target)
+        if player.coins >= self.coinsRequired:
+            player.coins -= 3
+            target.remove_card()
+
+        else:
+            print(f"Not enough coins. Coins required = {coinsRequired}")
+            
 
 class Ambassador(Action):
     name = "Ambassador"

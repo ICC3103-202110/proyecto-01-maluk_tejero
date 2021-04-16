@@ -1,81 +1,35 @@
-from player import Player
-from deck import Deck
-
-players = []
+from game import Game
 
 
 def print_menu_and_select():
     print("\nSelecciona una de las siguientes opciones:")
     print("1. Start game")
     print("2. Show players")
-    print("3. None")
-    print('4. None')
+    print("3. Show player 1")
+    print('4. Show player 2')
+    print('5. Show player 3')
     print("0. Exit")
     return int(input())
 
 
-def create_deck():
-    deck = Deck()
-    deck.build()
-    deck.shuffle_deck()
-    return deck
-
-
-def create_player():
-        name = str(input("What is your name?"))
-        return Player(name)
-
-
-def create_all_players(deck):
-    num_of_players = int(input("How many players would like to play? 3 or 4\n"))
-    if num_of_players not in [3, 4]:
-        create_all_players()
-    else:
-        for i in range(num_of_players):
-            player = create_player()
-            card1 = deck.draw_card()
-            card2 = deck.draw_card()
-            player.add_card(card1)
-            player.add_card(card2)
-            player.add_hidden_card(deck.hide())
-            player.add_hidden_card(deck.hide())
-            players.append(player)
-
-
-
-def show_players():
-    print("\nPlayers:")
-    for (i, _) in enumerate(players):
-        card1 = players[i].cards[0]
-        card2 = players[i].cards[1]
-        card1_h = players[i].hand[0]
-        card2_h =  players[i].hand[1]
-        print(f"{i}: {players[i].name} - Coins: {players[i].coins} - Hand: {card1_h.name}, {card2_h.name}")
-
-
-def show_player_open(player):
-    cards = ""
-    for pos in range(len(player.cards)):
-        cards += f"{player.cards[pos].name}, "
-    cards = cards[:-2]
-    print(f"{player.name} - Coins: {player.coins} - Cards: {cards}")
-
-
-
 def menu():
+    game = Game()
     while True:
         selection = print_menu_and_select()
         if selection == 0:
             break
         if selection == 1:
-            deck = create_deck()
-            create_all_players(deck)
+            game.deck.show_deck()
+            game.create_all_players(game.deck)
         if selection == 2:
-            show_players()
-        if selection ==3:
-            pass
+            game.show_players()
+        if selection == 3:
+            game.show_player_open(game.players[0])
         if selection == 4:
-            pass
+            game.show_player_open(game.players[1])
+        if selection == 5:
+            game.show_player_open(game.players[2])
+            
 
 
 if __name__ == '__main__':
