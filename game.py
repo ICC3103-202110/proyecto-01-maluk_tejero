@@ -75,9 +75,10 @@ class Game:
             cards += f"{player.cards[pos].name}, "
         cards = cards[:-2]
         print(f"{player.name} - Coins: {player.coins} - Cards: {cards}")
-    
+
+
     def choose_target(self, player):
-        targets = game.players
+        targets = self.players
         targets.remove(player)
         targets_str = ""
         for target in targets:
@@ -86,16 +87,44 @@ class Game:
         print(target_str)
         target = input(f"Choose your target")
         return target
-    
+
+
     def from_target_to_playerObject(self, target):
-        for player in players:
+        for player in self.players:
             if player.name == target:
                 return player
 
 
-
+    def player_turn(self, player):
+        if player.coins >= 10
+            return 3
+        print(f"\n{player.name} turn")
+        print("Choose your action")
+        print("\nGeneral Actions")
+        print("  0. Income")
+        print("  1. Foreign Aid")
+        print("  2. Coup")
+        print("\nCharacter Actions")
+        print("  3. Taxes")
+        print("  4. Assassinate")
+        print("  5. Exchange")
+        print("  6. Steal")
+        return int(input())
+    
+    def ask_challenge(self, player, action):
+        players_not_in_turn = self.players
+        players_not_in_turn.remove(player)
+        challengers = []
+        for player in players_not_in_turn:
+            print(f"{player.name}")
+            print(f"Do you want to challenge {action.name}")
 
     def Start(self):
         while len(players) > 1:
-            pass
+            for player in self.players:
+                if player.alive:
+                    action = player_turn(player)
+
+
+
 
