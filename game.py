@@ -96,7 +96,7 @@ class Game:
 
 
     def player_turn(self, player):
-        if player.coins >= 10
+        if player.coins >= 10:
             return 3
         print(f"\n{player.name} turn")
         print("Choose your action")

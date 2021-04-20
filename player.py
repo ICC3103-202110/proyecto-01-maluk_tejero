@@ -15,14 +15,14 @@ class Player:
     @property
     def coins(self):
         return self.__coins
-    
+ 
     @coins.setter
     def coins(self, value):
-        if self.__coins + value < 0:
+        if value < 0:
             self.__coins = 0
         else:
-            self.__coins += value
-    
+            self.__coins = value
+
 
     @property
     def cards(self):
@@ -68,11 +68,25 @@ class Player:
 
 
     def kill_player(self):
-        self.alive = False
+        self.__alive = False
 
 
     def remove_card(self):
-        print(self.cards)
-        index = int(input(f"{list(range(len(cards)))}\n"))
+        cards = ""
+        for pos in range(len(self.cards)):
+            n = self.cards[pos].name
+            cards += f"{n}, "
+        cards = cards[:-2]
+        for i in range(len(self.cards)):
+            print(f"{i}.- {self.cards[i].name}")
+        index = int(input("Choose card index to remove\n"))
         self.cards.pop(index)
         self.hand.pop(index)
+    
+    def show_player_open(self):
+        cards = ""
+        for pos in range(len(self.cards)):
+            n = self.cards[pos].name
+            cards += f"{n}, "
+        cards = cards[:-2]
+        print(f"{self.name} - Coins: {self.coins} - Cards: {cards}")

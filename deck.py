@@ -1,9 +1,10 @@
-from actions import Duke, Assassin, Ambassador, Captain, Countess, Hidden
+from actions import Income, ForeignAid, Coup, Duke, Assassin, Ambassador, Captain, Countess, Hidden
 from random import shuffle
 
 class Deck:
     def __init__(self):
         self.__cards = []
+        self.__actions = [Income, ForeignAid, Coup, Duke, Assassin, Ambassador, Captain, Countess, Hidden]
         
     @property
     def cards(self):
@@ -11,6 +12,14 @@ class Deck:
     
     @cards.setter
     def cards(self, value):
+        pass
+
+    @property
+    def actions(self):
+        return self.__actions
+    
+    @actions.setter
+    def actions(self):
         pass
 
 
