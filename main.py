@@ -23,8 +23,6 @@ def menu():
             game.show_players()
             game.start()
 
-            
-
 
 if __name__ == '__main__':
     menu()

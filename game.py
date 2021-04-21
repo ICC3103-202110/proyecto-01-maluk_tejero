@@ -1,6 +1,7 @@
 from player import Player
 from deck import Deck
-import random 
+from random import choice
+
 
 class Game:
     def __init__(self):
@@ -9,33 +10,30 @@ class Game:
         self.__log = []
         self.deck.build()
         self.deck.shuffle_deck()
-    
+
     @property
     def players(self):
         return self.__players
-    
+
     @players.setter
     def players(self):
         pass
 
-
     @property
     def deck(self):
         return self.__deck
-    
+
     @deck.setter
     def deck(self):
         pass
 
-
     @property
     def log(self):
         return self.__log
-    
+
     @log.setter
     def log(self):
         pass
-    
 
     def add_log(self, txt):
         log.append(txt)
@@ -43,7 +41,6 @@ class Game:
     def create_player(self):
         name = str(input("What is your name?"))
         return Player(name)
-
 
     def create_all_players(self, deck):
         num_of_players = int(input("How many players would like to play? 3 or 4\n"))
@@ -60,15 +57,12 @@ class Game:
                 player.add_hidden_card(deck.hide())
                 self.players.append(player)
 
-
-
     def show_players(self):
         print("\nPlayers:")
         for (i, _) in enumerate(self.players):
             card1_h = self.players[i].hand[0].name
-            card2_h =  self.players[i].hand[1].name
+            card2_h = self.players[i].hand[1].name
             print(f"{i}: {self.players[i].name} - Coins: {self.players[i].coins} - Hand: {card1_h}, {card2_h}")
-
 
     def show_player_open(self, player):
         cards = ""
@@ -76,7 +70,6 @@ class Game:
             cards += f"{player.cards[pos].name}, "
         cards = cards[:-2]
         print(f"{player.name} - Coins: {player.coins} - Cards: {cards}")
-
 
     def choose_target(self, player):
         targets = self.players[:]
@@ -88,8 +81,6 @@ class Game:
         target = int(input())
         target = targets[target]
         return target
-
-
 
     def player_turn(self, player):
         if player.coins >= 10:
@@ -106,7 +97,7 @@ class Game:
         print("  5. Exchange")
         print("  6. Steal")
         return int(input())
-    
+
     def ask_challenge(self, player, action):
         players_not_in_turn = self.players
         players_not_in_turn.remove(player)
@@ -116,11 +107,11 @@ class Game:
             ask = str(input(f"Do you want to challenge {action.name}? (Y/N)"))
             if ask == "Y":
                 challengers.append(player)
-        if len(challengers)==0:
-            return False
-        challenger = random.choice(challengers)
-        return challenger
 
+        if len(challengers) == 0:
+            return False
+        challenger = choice(challengers)
+        return challenger
 
     def respond_counteraction(self, player, action):
         print(f"{player.name}")
@@ -130,7 +121,6 @@ class Game:
         else:
             return False
 
-
     def start(self):
         while len(self.players) > 1:
             for player in self.players:
@@ -139,20 +129,13 @@ class Game:
                     action = self.player_turn(player)
                     if action in [0, 1, 3]:
                         self.deck.actions[action].act(self.deck.actions[action], player)
+                        if action == 3:
+                            challenger = self.ask_challenge(player, self.deck.actions[action])
+                            if challenger:
+                                player_has_card = player.check_for_card(self.deck.actions[action])
                     elif action in [2, 4, 6]:
                         target = self.choose_target(player)
                         self.deck.actions[action].act(self.deck.actions[action], player, target)
                     elif action in [5]:
                         self.deck.actions[action].act(self.deck.actions[action], player, self.deck)
                     player.show_player_open()
-
-
-
-
-
-
-
-                    
-
-
-

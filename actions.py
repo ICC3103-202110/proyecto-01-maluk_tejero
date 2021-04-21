@@ -1,11 +1,12 @@
-from errors import *
+from errors import InvalidTarget
+
 
 class Action:
     name = ""
     description = ""
     blocks = ""
     coinsRequired = 0
-    
+
 
 class Income(Action):
     name = "Income"
@@ -19,7 +20,7 @@ class Income(Action):
 class ForeignAid(Action):
     name = "Foreign Aid"
     description = "The player gets 2 coins (This action can be blocked by the Duke)."
-    
+
     def act(self, player):
         player.coins += 2
         print(f"{player.name} receives 2 coins.")
@@ -39,7 +40,6 @@ class Coup(Action):
             raise InvalidTarget
         player.coins -= coinsRequired
         target.remove_card()
-
 
 
 class Duke(Action):
@@ -70,6 +70,7 @@ class Assassin(Action):
             print(f"Not enough coins. Coins required = {coinsRequired}")
             raise ValueError("Not enough coins")
 
+
 class Ambassador(Action):
     name = "Ambassador"
     action = "Exchange"
@@ -86,8 +87,6 @@ class Ambassador(Action):
         while end_cards != start_cards:
             player.remove_card()
             end_cards = len(player.cards)
-        
-
 
 
 class Captain(Action):
@@ -101,7 +100,7 @@ class Captain(Action):
             steal = 2
         elif target.coins <= 1:
             steal = target.coins
-        
+
         target.coins -= steal
         player.coins += steal
 
@@ -115,6 +114,3 @@ class Countess(Action):
 class Hidden(Action):
     name = "*"
     description = "Hidden card"
-
-
-
