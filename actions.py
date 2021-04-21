@@ -30,7 +30,7 @@ class Coup(Action):
     description = "Pay 7 coins, choose player to lose influence"
     coinsRequired = 7
 
-    def act(self, player, target)
+    def act(self, player, target):
         if player.coins < self.coinsRequired:
             print(f"Not enough coins. Coins required = {coinsRequired}")
             raise ValueError("Not enough coins")
@@ -51,6 +51,7 @@ class Duke(Action):
     def act(self, player):
         player.coins += 3
         print(f"{player.name} used Tax. He stole 3 coins.")
+        PlayerResponse.counteraction()
 
 
 class Assassin(Action):
@@ -114,3 +115,6 @@ class Countess(Action):
 class Hidden(Action):
     name = "*"
     description = "Hidden card"
+
+
+

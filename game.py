@@ -1,5 +1,6 @@
 from player import Player
 from deck import Deck
+import random 
 
 class Game:
     def __init__(self):
@@ -78,21 +79,16 @@ class Game:
 
 
     def choose_target(self, player):
-        targets = self.players
+        targets = self.players[:]
         targets.remove(player)
-        targets_str = ""
+        print(f"Choose your target")
         for target in targets:
-            targets_str += f"{target.name}, "
-        target_str = target_str[:-2]
-        print(target_str)
-        target = input(f"Choose your target")
+            if target.alive:
+                print(f"{targets.index(target)}. {target.name}")
+        target = int(input())
+        target = targets[target]
         return target
 
-
-    def from_target_to_playerObject(self, target):
-        for player in self.players:
-            if player.name == target:
-                return player
 
 
     def player_turn(self, player):
@@ -117,14 +113,46 @@ class Game:
         challengers = []
         for player in players_not_in_turn:
             print(f"{player.name}")
-            print(f"Do you want to challenge {action.name}")
+            ask = str(input(f"Do you want to challenge {action.name}? (Y/N)"))
+            if ask == "Y":
+                challengers.append(player)
+        if len(challengers)==0:
+            return False
+        challenger = random.choice(challengers)
+        return challenger
 
-    def Start(self):
-        while len(players) > 1:
+
+    def respond_counteraction(self, player, action):
+        print(f"{player.name}")
+        ask = str(input(f"Do you want to challenge counteraction {action.name}? (Y/N)"))
+        if ask == "Y":
+            return True
+        else:
+            return False
+
+
+    def start(self):
+        while len(self.players) > 1:
             for player in self.players:
+                print(self.players)
                 if player.alive:
-                    action = player_turn(player)
+                    action = self.player_turn(player)
+                    if action in [0, 1, 3]:
+                        self.deck.actions[action].act(self.deck.actions[action], player)
+                    elif action in [2, 4, 6]:
+                        target = self.choose_target(player)
+                        self.deck.actions[action].act(self.deck.actions[action], player, target)
+                    elif action in [5]:
+                        self.deck.actions[action].act(self.deck.actions[action], player, self.deck)
+                    player.show_player_open()
 
+
+
+
+
+
+
+                    
 
 
 

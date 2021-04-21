@@ -19,20 +19,10 @@ def menu():
         if selection == 0:
             break
         if selection == 1:
-            game.deck.show_deck()
             game.create_all_players(game.deck)
-        if selection == 2:
             game.show_players()
-        if selection == 3:
-            game.players[0].show_player_open()
-            game.deck.actions[5].act(game.deck.actions[5], game.players[0], game.deck)
-            game.players[0].show_player_open()
-        if selection == 4:
-            game.players[1].show_player_open()
-            game.deck.actions[0].act(game.deck.actions[0], game.players[1])
-            game.players[1].show_player_open()
-        if selection == 5:
-            game.players[2].show_player_open()
+            game.start()
+
             
 
 

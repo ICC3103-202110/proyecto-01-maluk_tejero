@@ -36,10 +36,6 @@ class Player:
     def add_card(self, card):
         self.cards.append(card)
     
-    
-    def remove_card(self, position):
-        self.cards.pop(position)
-    
 
     @property
     def hand(self):
@@ -72,11 +68,6 @@ class Player:
 
 
     def remove_card(self):
-        cards = ""
-        for pos in range(len(self.cards)):
-            n = self.cards[pos].name
-            cards += f"{n}, "
-        cards = cards[:-2]
         for i in range(len(self.cards)):
             print(f"{i}.- {self.cards[i].name}")
         index = int(input("Choose card index to remove\n"))
