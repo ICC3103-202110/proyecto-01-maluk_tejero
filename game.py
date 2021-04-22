@@ -7,9 +7,9 @@ class Game:
     def __init__(self):
         self.__players = []
         self.__deck = Deck()
-        self.__log = []
         self.deck.build()
         self.deck.shuffle_deck()
+        self.__log = []
 
     @property
     def players(self):
@@ -86,6 +86,7 @@ class Game:
         if player.coins >= 10:
             return 3
         print(f"\n{player.name} turn")
+        player.show_player_open()
         print("Choose your action")
         print("\nGeneral Actions")
         print("  0. Income")
@@ -99,7 +100,7 @@ class Game:
         return int(input())
 
     def ask_challenge(self, player, action):
-        players_not_in_turn = self.players
+        players_not_in_turn = self.players[:]
         players_not_in_turn.remove(player)
         challengers = []
         for player in players_not_in_turn:
@@ -113,29 +114,57 @@ class Game:
         challenger = choice(challengers)
         return challenger
 
-    def respond_counteraction(self, player, action):
-        print(f"{player.name}")
-        ask = str(input(f"Do you want to challenge counteraction {action.name}? (Y/N)"))
-        if ask == "Y":
-            return True
-        else:
-            return False
+    def challenge(self, player, action, options):
+        allow_challenge = True
+        if action in options:
+            challenger = self.ask_challenge(player, self.deck.actions[action])
+            if challenger:
+                player_has_card = player.check_for_card(self.deck.actions[action])
+                if player_has_card:
+                    print(f"{player.name} has {self.deck.actions[action].name}")
+                    challenger.reveal_card()
+                    card_to_deck = player.remove_card_challenged(self.deck.actions[action])
+                    self.deck.add_card_deck(card_to_deck)
+                    self.deck.shuffle_deck()
+                    added_card = self.deck.draw_card()
+                    player.add_card(added_card)
+                    player.add_hidden_card(self.deck.actions[8])
+                    # counter attack
+                else:
+                    print(f"{player.name} does not have {self.deck.actions[action].name}")
+                    player.reveal_card()
+                    allow_challenge = False
+        return allow_challenge
+
+    def counter_action(self):
+        pass
 
     def start(self):
         while len(self.players) > 1:
             for player in self.players:
-                print(self.players)
+                self.show_players()
                 if player.alive:
-                    action = self.player_turn(player)
+                    if player.coins >= 10:
+                        print(f"\n{player.name} turn")
+                        action = 2
+                    else:
+                        action = self.player_turn(player)
+
                     if action in [0, 1, 3]:
-                        self.deck.actions[action].act(self.deck.actions[action], player)
-                        if action == 3:
-                            challenger = self.ask_challenge(player, self.deck.actions[action])
-                            if challenger:
-                                player_has_card = player.check_for_card(self.deck.actions[action])
+                        allow_challenge = self.challenge(player, action, [3])
+                        if allow_challenge:
+                            self.deck.actions[action].act(player)
                     elif action in [2, 4, 6]:
+                        if action == 4 and player.coins < 3:
+                            raise ValueError("Not enough coins. Coins required = 3")
+                        if action == 2 and player.coins < 7:
+                            raise ValueError("Not enough coins. Coins required = 7")
                         target = self.choose_target(player)
-                        self.deck.actions[action].act(self.deck.actions[action], player, target)
+                        allow_challenge = self.challenge(player, action, [4, 6])
+                        if allow_challenge:
+                            self.deck.actions[action].act(player, target)
                     elif action in [5]:
-                        self.deck.actions[action].act(self.deck.actions[action], player, self.deck)
+                        allow_challenge = self.challenge(player, action, [5])
+                        if allow_challenge:
+                            self.deck.actions[action].act(player, self.deck)
                     player.show_player_open()

@@ -43,7 +43,14 @@ class Player:
     def add_hidden_card(self, Hidden):
         self.hand.append(Hidden)
 
-    def reveal_card(self, position):
+    def reveal_card(self):
+        print(self.name)
+        for i in range(len(self.cards)):
+            print(f"{i}.- {self.cards[i].name}")
+        position = int(input("Choose card index to reveal\n"))
+        if not self.cards[position].usable:
+            raise DeadCard("This card is dead")
+        self.cards[position].kill_card()
         self.hand[position] = self.cards[position]
 
     @property
@@ -64,6 +71,15 @@ class Player:
         self.cards.pop(index)
         self.hand.pop(index)
 
+    def remove_card_challenged(self, card):
+        influences = []
+        for i in self.cards:
+            influences.append(type(i))
+        index = influences.index(type(card))
+        self.cards.pop(index)
+        self.hand.pop(index)
+        return card
+
     def show_player_open(self):
         cards = ""
         for pos in range(len(self.cards)):
@@ -73,7 +89,11 @@ class Player:
         print(f"{self.name} - Coins: {self.coins} - Cards: {cards}")
 
     def check_for_card(self, card):
-        if card in self.cards:
+        actions = []
+        card = type(card)
+        for influence in self.cards:
+            actions.append(type(influence))
+        if card in actions:
             return True
         else:
             return False

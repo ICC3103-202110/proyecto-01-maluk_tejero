@@ -7,6 +7,20 @@ class Action:
     blocks = ""
     coinsRequired = 0
 
+    def __init__(self):
+        self.__usable = True
+
+    @property
+    def usable(self):
+        return self.__usable
+
+    @usable.setter
+    def usable(self):
+        pass
+
+    def kill_card(self):
+        self.__usable = False
+
 
 class Income(Action):
     name = "Income"
@@ -33,13 +47,13 @@ class Coup(Action):
 
     def act(self, player, target):
         if player.coins < self.coinsRequired:
-            print(f"Not enough coins. Coins required = {coinsRequired}")
+            print(f"Not enough coins. Coins required = {self.coinsRequired}")
             raise ValueError("Not enough coins")
         if not target.alive:
             print(f"Target is not alive")
             raise InvalidTarget
-        player.coins -= coinsRequired
-        target.remove_card()
+        player.coins -= self.coinsRequired
+        target.reveal_card()
 
 
 class Duke(Action):
@@ -51,7 +65,6 @@ class Duke(Action):
     def act(self, player):
         player.coins += 3
         print(f"{player.name} used Tax. He stole 3 coins.")
-        PlayerResponse.counteraction()
 
 
 class Assassin(Action):
@@ -64,11 +77,10 @@ class Assassin(Action):
         if player.coins >= self.coinsRequired:
             player.coins -= self.coinsRequired
             print(target.name)
-            target.remove_card()
+            target.reveal_card()
 
         else:
-            print(f"Not enough coins. Coins required = {coinsRequired}")
-            raise ValueError("Not enough coins")
+            raise ValueError("Not enough coins. Coins required = {self.coinsRequired}")
 
 
 class Ambassador(Action):
@@ -93,7 +105,7 @@ class Captain(Action):
     name = "Captain"
     action = "Steal"
     description = "Take 2 coins from another player"
-    blocks = "Captain - Steal"
+    blocks = "Captain"
 
     def act(self, player, target):
         if target.coins >= 2:
