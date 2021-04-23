@@ -44,11 +44,9 @@ class Game:
         return Player(name)
 
     def create_all_players(self):
-        num_of_players = int(input("How many players would \
-                                    like to play? 3 or 4\n"))
+        num_of_players = int(input("How many players would like to play? 3 or 4\n"))
         if num_of_players not in [3, 4]:
-            print("Number of players not allowed, please \
-                   choose between 3 or 4\n\n")
+            print("Number of players not allowed, please choose between 3 or 4\n\n")
             self.create_all_players()
         else:
             for i in range(num_of_players):
@@ -63,14 +61,11 @@ class Game:
 
     def show_players(self):
         print("\nPlayers:")
-        print("Cards shown as * are playable, cards shown \
-               with their name are revealed and cannot be \
-               used or put back in the deck")
+        print("Cards shown as * are playable, cards shown with their name are revealed and cannot be used or put back in the deck")
         for (i, _) in enumerate(self.players):
             card1_h = self.players[i].hand[0].name
             card2_h = self.players[i].hand[1].name
-            print(f"{i}: {self.players[i].name} - Coins: \
-                    {self.players[i].coins} - Hand: {card1_h}, {card2_h}")
+            print(f"{i}: {self.players[i].name} - Coins: {self.players[i].coins} - Hand: {card1_h}, {card2_h}")
 
     def choose_target(self, player):
         targets = self.players[:]
@@ -134,8 +129,7 @@ class Game:
                                            # challenger loses
                                            # YES INITIAL ACTION
             else:
-                print(f"{player.name} does not have \
-                        {self.deck.actions[action].name}")
+                print(f"{player.name} does not have {self.deck.actions[action].name}")
                 player.reveal_card()
                 challenge_success = True  # There is challenger
                                           # challenger wins
@@ -153,8 +147,7 @@ class Game:
                 blocker_name = "Ambassador or Captain"
             else:
                 blocker_name = action.blocked_by[0].name
-            ask = str(input(f"Do you want to counter attack {action.name}? \
-                              For this you need {blocker_name} (Y/N)"))
+            ask = str(input(f"Do you want to counter attack {action.name}? For this you need {blocker_name} (Y/N)"))
             if ask == "Y":
                 counter_attacker.append(player)
 
@@ -181,8 +174,7 @@ class Game:
             if challenger:
                 counter_attacker_has_card = counter_attacker.check_for_card(self.deck.actions[blocker_final])
                 if counter_attacker_has_card:
-                    print(f"{counter_attacker.name} says he has \
-                            {self.deck.actions[blocker_final].name}")
+                    print(f"{counter_attacker.name} says he has {self.deck.actions[blocker_final].name}")
                     challenger.reveal_card()
                     self.remove_players_from_game()
                     card_to_deck = counter_attacker.remove_card_challenged(self.deck.actions[blocker_final])
@@ -199,8 +191,7 @@ class Game:
                                             # NO INITIAL ACTION
                     return counter_success
                 else:
-                    print(f"{counter_attacker.name} does not have \
-                            {self.deck.actions[blocker_final].name}")
+                    print(f"{counter_attacker.name} does not have {self.deck.actions[blocker_final].name}")
                     print(f"{counter_attacker.name} loses an influence")
                     counter_attacker.reveal_card()
                     self.remove_players_from_game()
@@ -212,9 +203,7 @@ class Game:
             else:
                 if isinstance(action, type(self.deck.actions[4])):
                     player.coins -= 3
-                print(f"Counter  attack by {counter_attacker.name} with \
-                        {self.deck.actions[blocker_final].name} \
-                        was successful")
+                print(f"Counter  attack by {counter_attacker.name} with {self.deck.actions[blocker_final].name} was successful")
                 counter_success = True  # There is counterAttacker
                                         # There is NO challenger
                                         # NO INITIAL ACTION
@@ -229,8 +218,7 @@ class Game:
         for player in self.players:
             if player.hand == player.cards:
                 player.kill_player()
-                print(f"{player.name} was killed because \
-                        he has no influence left")
+                print(f"{player.name} was killed because he has no influence left")
                 self.players.remove(player)
 
     def check_winner(self):
@@ -248,8 +236,7 @@ class Game:
                 if player.alive:
                     if player.coins >= 10:
                         print(f"\n{player.name} turn")
-                        print(f"{player.name} is forced to play Coup because \
-                                he has 10 or more coins")
+                        print(f"{player.name} is forced to play Coup because he has 10 or more coins")
                         action = 2
                     else:
                         action = self.player_turn(player)
@@ -268,8 +255,7 @@ class Game:
 
                     elif action == 2:
                         if player.coins < 7:
-                            raise ValueError("Not enough coins. \
-                                              Coins required = 7")
+                            raise ValueError("Not enough coins. Coins required = 7")
                         target = self.choose_target(player)
                         self.deck.actions[action].act(player, target)
 
@@ -284,8 +270,7 @@ class Game:
 
                     elif action == 4:
                         if player.coins < 3:
-                            raise ValueError("Not enough coins. \
-                                              Coins required = 3")
+                            raise ValueError("Not enough coins. Coins required = 3")
                         challenge_success = self.challenge(player, action)
                         if challenge_success:
                             self.remove_players_from_game()
