@@ -65,17 +65,10 @@ class Game:
             card2_h = self.players[i].hand[1].name
             print(f"{i}: {self.players[i].name} - Coins: {self.players[i].coins} - Hand: {card1_h}, {card2_h}")
 
-    def show_player_open(self, player):
-        cards = ""
-        for pos in range(len(player.cards)):
-            cards += f"{player.cards[pos].name}, "
-        cards = cards[:-2]
-        print(f"{player.name} - Coins: {player.coins} - Cards: {cards}")
-
     def choose_target(self, player):
         targets = self.players[:]
         targets.remove(player)
-        print(f"Choose your target")
+        print(f"Choose your target. By index")
         for target in targets:
             if target.alive:
                 print(f"{targets.index(target)}. {target.name}")
@@ -121,8 +114,10 @@ class Game:
         if challenger:
             player_has_card = player.check_for_card(self.deck.actions[action])
             if player_has_card:
-                print(f"{player.name} says he has {self.deck.actions[action].name}")
+                print(f"{player.name} has {self.deck.actions[action].name}")
+                print(f"{challenger.name} loses the challenge")
                 challenger.reveal_card()
+                self.remove_players_from_game()
                 card_to_deck = player.remove_card_challenged(self.deck.actions[action])
                 self.deck.add_card_deck(card_to_deck)
                 self.deck.shuffle_deck()
@@ -174,8 +169,9 @@ class Game:
                 if counter_attacker_has_card:
                     print(f"{counter_attacker.name} says he has {self.deck.actions[blocker_final].name}")
                     challenger.reveal_card()
+                    self.remove_players_from_game()
                     card_to_deck = player.remove_card_challenged(self.deck.actions[blocker_final])
-                    if not card_to_deck:
+                    if not card_to_deck.usable:
                         raise DeadCard("Dead card can't be returned to deck")
                     self.deck.add_card_deck(card_to_deck)
                     self.deck.shuffle_deck()
@@ -184,17 +180,26 @@ class Game:
                     player.add_hidden_card(self.deck.actions[8])
                 else:
                     print(f"{counter_attacker.name} does not have {self.deck.actions[blocker_final].name}")
+                    print(f"{counter_attacker.name} loses an influence")
                     counter_attacker.reveal_card()
+                    self.remove_players_from_game()
                     counter_success = True
                     return counter_success
             else:
                 if isinstance(action, type(self.deck.actions[4])):
                     player.coins -= 3
-                print(f"Counter attack by {counter_attacker.name} with {self.deck.actions[blocker_final].name} was successful")
+                print(f"Counter  attack by {counter_attacker.name} with {self.deck.actions[blocker_final].name} was successful")
                 counter_success = True
                 return counter_success
         else:
             return counter_success
+
+    def remove_players_from_game(self):
+        for player in self.players:
+            if player.hand == player.cards:
+                player.kill_player()
+                print(f"{player.name} was killed because he has no influence left")
+                self.players.remove(player)
 
     def start(self):
         while len(self.players) > 1:
@@ -213,12 +218,7 @@ class Game:
 
                     elif action == 1:
                         counter_action = self.counter_action(player, self.deck.actions[action])
-                        if not counter_action:
-                            self.deck.actions[action].act(player)
-
-                    elif action == 3:
-                        challenge_success = self.challenge(player, action)
-                        if challenge_success:
+                        if counter_action:
                             pass
                         else:
                             self.deck.actions[action].act(player)
@@ -228,6 +228,13 @@ class Game:
                             raise ValueError("Not enough coins. Coins required = 7")
                         target = self.choose_target(player)
                         self.deck.actions[action].act(player, target)
+
+                    elif action == 3:
+                        challenge_success = self.challenge(player, action)
+                        if challenge_success:
+                            pass
+                        else:
+                            self.deck.actions[action].act(player)
 
                     elif action == 4:
                         if player.coins < 3:
@@ -243,6 +250,12 @@ class Game:
                                 self.deck.actions[action].act(player, target)
                             else:
                                 print(f"Counterattack wasn't successful")
+                    elif action == 5:
+                        challenge_success = self.challenge(player, action)
+                        if challenge_success:
+                            pass
+                        else:
+                            self.deck.actions[action].act(player, self.deck)
 
                     elif action == 6:
                         challenge_success = self.challenge(player, action)
@@ -254,16 +267,6 @@ class Game:
                                 target = self.choose_target(player)
                                 self.deck.actions[action].act(player, target)
 
-                    elif action == 5:
-                        challenge_success = self.challenge(player, action)
-                        if challenge_success:
-                            pass
-                        else:
-                            self.deck.actions[action].act(player, self.deck)
-
-                    for player in self.players:
-                        if player.hand == player.cards:
-                            player.kill_player()
-                            print(f"{player.name} was killed because he has no influence left")
-                            self.players.remove(player)
-                    player.show_player_open()
+                    self.remove_players_from_game()
+                    wait = input("Press enter for next turn")
+        print(f"{self.players[0].name} wins")

@@ -37,13 +37,11 @@ class Coup(Action):
     coinsRequired = 7
 
     def act(self, player, target):
-        if player.coins < self.coinsRequired:
-            print(f"Not enough coins. Coins required = {self.coinsRequired}")
-            raise ValueError("Not enough coins")
         if not target.alive:
             print(f"Target is not alive")
             raise InvalidTarget
         player.coins -= self.coinsRequired
+        print(f"{target.name} loses an influence due to Coup played by {player.name}")
         target.reveal_card()
 
 
@@ -55,7 +53,7 @@ class Duke(Action):
 
     def act(self, player):
         player.coins += 3
-        print(f"{player.name} used Tax. He stole 3 coins.")
+        print(f"{player.name} used Tax. He received 3 coins.")
 
 
 class ForeignAid(Action):
@@ -84,8 +82,7 @@ class Assassin(Action):
     def act(self, player, target):
         if player.coins >= self.coinsRequired:
             player.coins -= self.coinsRequired
-            print(target.name)
-            print(f"{target.name} lost a card to an Assassin")
+            print(f"{target.name} lost an Influence to an Assassin")
             target.reveal_card()
 
         else:

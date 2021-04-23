@@ -44,7 +44,6 @@ class Player:
         self.hand.append(Hidden)
 
     def reveal_card(self):
-        print(self.name)
         for i in range(len(self.cards)):
             print(f"{i}.- {self.cards[i].name}")
         position = int(input("Choose card index to reveal\n"))

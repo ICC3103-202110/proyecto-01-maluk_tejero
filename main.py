@@ -16,9 +16,15 @@ def menu():
             break
         if selection == 1:
             game.create_all_players(game.deck)
-            game.show_player_open(game.players[0])
-            game.show_player_open(game.players[1])
-            game.show_player_open(game.players[2])
+            # for player in game.players:
+            #     print("\n" * 100)
+            #     x = input(f"Press enter to show {player.name} hand")
+            #     player.show_player_open()
+            #     x = input("Press enter to continue")
+            # print("\n" * 100)
+            game.players[0].show_player_open()
+            game.players[1].show_player_open()
+            game.players[2].show_player_open()
             game.start()
 
 
