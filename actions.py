@@ -31,15 +31,6 @@ class Income(Action):
         print(f"{player.name} used Income, receives 1 coin.")
 
 
-class ForeignAid(Action):
-    name = "Foreign Aid"
-    description = "The player gets 2 coins (This action can be blocked by the Duke)."
-
-    def act(self, player):
-        player.coins += 2
-        print(f"{player.name} receives 2 coins.")
-
-
 class Coup(Action):
     name = "Coup"
     description = "Pay 7 coins, choose player to lose influence"
@@ -67,16 +58,34 @@ class Duke(Action):
         print(f"{player.name} used Tax. He stole 3 coins.")
 
 
+class ForeignAid(Action):
+    name = "Foreign Aid"
+    description = "The player gets 2 coins (This action can be blocked by the Duke)."
+    blocked_by = [Duke()]
+
+    def act(self, player):
+        player.coins += 2
+        print(f"{player.name} receives 2 coins.")
+
+
+class Countess(Action):
+    name = "Countess"
+    description = "Blocks assassination"
+    blocks = "Assassin"
+
+
 class Assassin(Action):
     name = "Assassin"
     action = "Assassinate"
     description = "Pay 3 coins, choose player to lose influence"
     coinsRequired = 3
+    blocked_by = [Countess()]
 
     def act(self, player, target):
         if player.coins >= self.coinsRequired:
             player.coins -= self.coinsRequired
             print(target.name)
+            print(f"{target.name} lost a card to an Assassin")
             target.reveal_card()
 
         else:
@@ -106,6 +115,7 @@ class Captain(Action):
     action = "Steal"
     description = "Take 2 coins from another player"
     blocks = "Captain"
+    blocked_by = [Ambassador(), "Captain"]
 
     def act(self, player, target):
         if target.coins >= 2:
@@ -115,12 +125,6 @@ class Captain(Action):
 
         target.coins -= steal
         player.coins += steal
-
-
-class Countess(Action):
-    name = "Countess"
-    description = "Blocks assassination"
-    blocks = "Assassin"
 
 
 class Hidden(Action):

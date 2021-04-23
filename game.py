@@ -1,6 +1,7 @@
 from player import Player
 from deck import Deck
 from random import choice
+from errors import DeadCard
 
 
 class Game:
@@ -114,30 +115,86 @@ class Game:
         challenger = choice(challengers)
         return challenger
 
-    def challenge(self, player, action, options):
-        allow_challenge = True
-        if action in options:
-            challenger = self.ask_challenge(player, self.deck.actions[action])
+    def challenge(self, player, action):
+        challenge_success = False
+        challenger = self.ask_challenge(player, self.deck.actions[action])
+        if challenger:
+            player_has_card = player.check_for_card(self.deck.actions[action])
+            if player_has_card:
+                print(f"{player.name} says he has {self.deck.actions[action].name}")
+                challenger.reveal_card()
+                card_to_deck = player.remove_card_challenged(self.deck.actions[action])
+                self.deck.add_card_deck(card_to_deck)
+                self.deck.shuffle_deck()
+                added_card = self.deck.draw_card()
+                player.add_card(added_card)
+                player.add_hidden_card(self.deck.actions[8])
+            else:
+                print(f"{player.name} does not have {self.deck.actions[action].name}")
+                player.reveal_card()
+                return False
+        return challenger
+
+    def ask_counter_action(self, player, action):
+        players_not_in_turn = self.players[:]
+        players_not_in_turn.remove(player)
+        counter_attacker = []
+        for player in players_not_in_turn:
+            print(f"{player.name}")
+            if action.name == "Captain":
+                blocker_name = "Ambassador or Captain"
+            else:
+                blocker_name = action.blocked_by[0].name
+            ask = str(input(f"Do you want to counter attack {action.name}? For this you need {blocker_name} (Y/N)"))
+            if ask == "Y":
+                counter_attacker.append(player)
+
+        if len(counter_attacker) == 0:
+            return False
+        counter_attacker = choice(counter_attacker)
+        return counter_attacker
+
+    def counter_action(self, player, action):
+        counter_success = False
+        counter_attacker = self.ask_counter_action(player, action)
+        if counter_attacker:
+            blocker = action.blocked_by
+            if len(blocker) > 1:
+                print(f"Which blocker do you have?")
+                print(f"0. {self.deck.actions[5].name}")
+                print(f"1. {self.deck.actions[6].name}")
+                blocker = int(input()) + 5
+            else:
+                for i in self.deck.actions:
+                    if isinstance(blocker[0], type(i)):
+                        blocker_final = self.deck.actions.index(i)
+            challenger = self.challenge(counter_attacker, blocker_final)
             if challenger:
-                player_has_card = player.check_for_card(self.deck.actions[action])
-                if player_has_card:
-                    print(f"{player.name} has {self.deck.actions[action].name}")
+                counter_attacker_has_card = counter_attacker.check_for_card(self.deck.actions[blocker_final])
+                if counter_attacker_has_card:
+                    print(f"{counter_attacker.name} says he has {self.deck.actions[blocker_final].name}")
                     challenger.reveal_card()
-                    card_to_deck = player.remove_card_challenged(self.deck.actions[action])
+                    card_to_deck = player.remove_card_challenged(self.deck.actions[blocker_final])
+                    if not card_to_deck:
+                        raise DeadCard("Dead card can't be returned to deck")
                     self.deck.add_card_deck(card_to_deck)
                     self.deck.shuffle_deck()
                     added_card = self.deck.draw_card()
                     player.add_card(added_card)
                     player.add_hidden_card(self.deck.actions[8])
-                    # counter attack
                 else:
-                    print(f"{player.name} does not have {self.deck.actions[action].name}")
-                    player.reveal_card()
-                    allow_challenge = False
-        return allow_challenge
-
-    def counter_action(self):
-        pass
+                    print(f"{counter_attacker.name} does not have {self.deck.actions[blocker_final].name}")
+                    counter_attacker.reveal_card()
+                    counter_success = True
+                    return counter_success
+            else:
+                if isinstance(action, type(self.deck.actions[4])):
+                    player.coins -= 3
+                print(f"Counter attack by {counter_attacker.name} with {self.deck.actions[blocker_final].name} was successful")
+                counter_success = True
+                return counter_success
+        else:
+            return counter_success
 
     def start(self):
         while len(self.players) > 1:
@@ -146,25 +203,67 @@ class Game:
                 if player.alive:
                     if player.coins >= 10:
                         print(f"\n{player.name} turn")
+                        print(f"{player.name} is forced to play Coup because he has 10 or more coins")
                         action = 2
                     else:
                         action = self.player_turn(player)
 
-                    if action in [0, 1, 3]:
-                        allow_challenge = self.challenge(player, action, [3])
-                        if allow_challenge:
+                    if action == 0:
+                        self.deck.actions[action].act(player)
+
+                    elif action == 1:
+                        counter_action = self.counter_action(player, self.deck.actions[action])
+                        if not counter_action:
                             self.deck.actions[action].act(player)
-                    elif action in [2, 4, 6]:
-                        if action == 4 and player.coins < 3:
-                            raise ValueError("Not enough coins. Coins required = 3")
-                        if action == 2 and player.coins < 7:
+
+                    elif action == 3:
+                        challenge_success = self.challenge(player, action)
+                        if challenge_success:
+                            pass
+                        else:
+                            self.deck.actions[action].act(player)
+
+                    elif action == 2:
+                        if player.coins < 7:
                             raise ValueError("Not enough coins. Coins required = 7")
                         target = self.choose_target(player)
-                        allow_challenge = self.challenge(player, action, [4, 6])
-                        if allow_challenge:
-                            self.deck.actions[action].act(player, target)
-                    elif action in [5]:
-                        allow_challenge = self.challenge(player, action, [5])
-                        if allow_challenge:
+                        self.deck.actions[action].act(player, target)
+
+                    elif action == 4:
+                        if player.coins < 3:
+                            raise ValueError("Not enough coins. Coins required = 3")
+                        challenge_success = self.challenge(player, action)
+                        if challenge_success:
+                            pass
+                        else:
+                            counter_action = self.counter_action(player, self.deck.actions[action])
+                            if not counter_action:
+                                print(f"{self.deck.actions[action].name} by {player.name} was not counter attacked.")
+                                target = self.choose_target(player)
+                                self.deck.actions[action].act(player, target)
+                            else:
+                                print(f"Counterattack wasn't successful")
+
+                    elif action == 6:
+                        challenge_success = self.challenge(player, action)
+                        if challenge_success:
+                            pass
+                        else:
+                            counter_action = self.counter_action(player, self.deck.actions[action])
+                            if not counter_action:
+                                target = self.choose_target(player)
+                                self.deck.actions[action].act(player, target)
+
+                    elif action == 5:
+                        challenge_success = self.challenge(player, action)
+                        if challenge_success:
+                            pass
+                        else:
                             self.deck.actions[action].act(player, self.deck)
+
+                    for player in self.players:
+                        if player.hand == player.cards:
+                            player.kill_player()
+                            print(f"{player.name} was killed because he has no influence left")
+                            self.players.remove(player)
                     player.show_player_open()
