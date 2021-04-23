@@ -119,7 +119,7 @@ class Captain(Action):
             steal = 2
         elif target.coins <= 1:
             steal = target.coins
-
+        print(f"{player.name} stole {steal} coins from {target.name}")
         target.coins -= steal
         player.coins += steal
 
