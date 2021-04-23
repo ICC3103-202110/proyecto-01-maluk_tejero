@@ -41,7 +41,8 @@ class Coup(Action):
             print(f"Target is not alive")
             raise InvalidTarget
         player.coins -= self.coinsRequired
-        print(f"{target.name} loses an influence due to Coup played by {player.name}")
+        print(f"{target.name} loses an influence due \
+              to Coup played by {player.name}")
         target.reveal_card()
 
 
@@ -58,7 +59,8 @@ class Duke(Action):
 
 class ForeignAid(Action):
     name = "Foreign Aid"
-    description = "The player gets 2 coins (This action can be blocked by the Duke)."
+    description = "The player gets 2 coins (This action \
+                   can be blocked by the Duke)."
     blocked_by = [Duke()]
 
     def act(self, player):
@@ -86,7 +88,8 @@ class Assassin(Action):
             target.reveal_card()
 
         else:
-            raise ValueError("Not enough coins. Coins required = {self.coinsRequired}")
+            raise ValueError("Not enough coins. \
+                              Coins required = {self.coinsRequired}")
 
 
 class Ambassador(Action):
