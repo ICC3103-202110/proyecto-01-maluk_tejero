@@ -5,3 +5,4 @@ registro-civil
 __pycache__
 sources.txt
 .vscode
+.DS_store
