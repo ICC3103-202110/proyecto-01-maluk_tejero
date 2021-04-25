@@ -10,7 +10,7 @@ class Game:
         self.__deck = Deck()
         self.deck.build()
         self.deck.shuffle_deck()
-        self.__log = []
+        self.__log = ["\n\nLog\n"]
 
     @property
     def players(self):
@@ -37,7 +37,7 @@ class Game:
         pass
 
     def add_log(self, txt):
-        log.append(txt)
+        self.log.append(txt)
 
     def create_player(self):
         name = str(input("What is your name?"))
@@ -96,7 +96,8 @@ class Game:
         print("  3. Taxes")
         print("  4. Assassinate")
         print("  5. Exchange")
-        print("  6. Steal")
+        print("  6. Steal\n")
+        print("7. Show log")
         print("\nChoose your action index")
         return int(input())
 
@@ -263,8 +264,15 @@ class Game:
                     else:
                         action = self.player_turn(player)
 
+                    while action == 7:
+                        for line in self.log:
+                            print(line)
+                        action = self.player_turn(player)
+
                     if action == 0:
                         self.deck.actions[action].act(player)
+                        self.add_log(
+                            f"{player.name} used Income, receives 1 coin")
 
                     elif action == 1:
                         counter_success = self.counter_action(
@@ -275,6 +283,9 @@ class Game:
                                 continue
                         else:
                             self.deck.actions[action].act(player)
+                            self.add_log(
+                                f"{player.name} used Foreign Aid, "
+                                f"receives 2 coins.")
 
                     elif action == 2:
                         if player.coins < 7:
@@ -282,6 +293,8 @@ class Game:
                                 "Not enough coins. Coins required = 7")
                         target = self.choose_target(player)
                         self.deck.actions[action].act(player, target)
+                        self.add_log(f"{target.name} loses an influence due "
+                                     f"to Coup played by {player.name}")
 
                     elif action == 3:
                         challenge_success = self.challenge(player, action)
@@ -291,6 +304,9 @@ class Game:
                                 continue
                         else:
                             self.deck.actions[action].act(player)
+                            self.add_log(
+                                f"{player.name} used Tax. "
+                                "He received 3 coins.")
 
                     elif action == 4:
                         if player.coins < 3:
@@ -309,6 +325,8 @@ class Game:
                         else:
                             target = self.choose_target(player)
                             self.deck.actions[action].act(player, target)
+                            self.add_log(f"{target.name} lost an Influence "
+                                         f"to an Assassin")
 
                     elif action == 5:
                         challenge_success = self.challenge(player, action)
@@ -318,6 +336,8 @@ class Game:
                                 continue
                         else:
                             self.deck.actions[action].act(player, self.deck)
+                            self.add_log(f"{player.name} used Exchange to "
+                                         f"swap cards with the Court Deck")
 
                     elif action == 6:
                         challenge_success = self.challenge(player, action)
@@ -332,7 +352,10 @@ class Game:
                                 pass
                             else:
                                 target = self.choose_target(player)
-                                self.deck.actions[action].act(player, target)
+                                steal = self.deck.actions[action].act(
+                                                                player, target)
+                                self.add_log(f"{player.name} stole {steal} "
+                                             f"coins from {target.name}")
 
                     self.remove_players_from_game()
                     wait = input("Press enter for next turn")

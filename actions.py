@@ -65,7 +65,7 @@ class ForeignAid(Action):
 
     def act(self, player):
         player.coins += 2
-        print(f"{player.name} receives 2 coins.")
+        print(f"{player.name} used Foreign Aid, receives 2 coins.")
 
 
 class Countess(Action):
@@ -104,6 +104,7 @@ class Ambassador(Action):
         while end_cards != start_cards:
             player.remove_card()
             end_cards = len(player.cards)
+        print(f"{player.name} used Exchange to swap cards with the Court Deck")
 
 
 class Captain(Action):
@@ -121,6 +122,7 @@ class Captain(Action):
         print(f"{player.name} stole {steal} coins from {target.name}")
         target.coins -= steal
         player.coins += steal
+        return steal
 
 
 class Hidden(Action):
