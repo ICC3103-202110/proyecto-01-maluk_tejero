@@ -118,15 +118,15 @@ class Game:
 
     def challenge(self, player, action):
         challenge_success = False
-        challenger = self.ask_challenge(player, self.deck.actions[action])
+        action = self.deck.actions[action]
+        challenger = self.ask_challenge(player, action)
         if challenger:
-            player_has_card = player.check_for_card(self.deck.actions[action])
+            player_has_card = player.check_for_card(action)
             if player_has_card:
-                print(f"{player.name} has {self.deck.actions[action].name}")
+                print(f"{player.name} has {action.name}")
                 print(f"{challenger.name} loses the challenge")
                 challenger.reveal_card()
-                card_to_deck = player.remove_card_challenged(
-                    self.deck.actions[action])
+                card_to_deck = player.remove_card_challenged(action)
                 self.deck.add_card_deck(card_to_deck)
                 self.deck.shuffle_deck()
                 added_card = self.deck.draw_card()
@@ -137,15 +137,14 @@ class Game:
                 # challenger loses
                 # YES INITIAL ACTION
             else:
-                print(f"{player.name} does not have "
-                      f"{self.deck.actions[action].name}")
+                print(f"{player.name} does not have {action.name}")
                 player.reveal_card()
                 challenge_success = True
                 # There is challenger
                 # challenger wins
                 # NO INITIAL ACTION
             self.remove_players_from_game()
-        return challenger
+        return challenge_success
 
     def ask_counter_action(self, player, action):
         players_not_in_turn = self.players[:]
