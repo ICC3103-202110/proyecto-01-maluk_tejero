@@ -84,8 +84,9 @@ class Assassin(Action):
     def act(self, player, target):
         if player.coins >= self.coinsRequired:
             player.coins -= self.coinsRequired
-            print(f"{target.name} lost an Influence to an Assassin")
-            target.reveal_card()
+            print(f"\n{target.name} lost an Influence to an Assassin")
+            card_killed = target.reveal_card()
+            return card_killed
 
 
 class Ambassador(Action):

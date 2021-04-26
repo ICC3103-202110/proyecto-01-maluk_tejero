@@ -1,11 +1,13 @@
-from actions import Income, ForeignAid, Coup, Duke, Assassin, Ambassador, Captain, Countess, Hidden
+from actions import Income, ForeignAid, Coup, Duke, Assassin, Ambassador
+from actions import Captain, Countess, Hidden
 from random import shuffle
 
 
 class Deck:
     def __init__(self):
         self.__cards = []
-        self.__actions = [Income(), ForeignAid(), Coup(), Duke(), Assassin(), Ambassador(), Captain(), Countess(), Hidden()]
+        self.__actions = [Income(), ForeignAid(), Coup(), Duke(), Assassin(),
+                          Ambassador(), Captain(), Countess(), Hidden()]
 
     @property
     def cards(self):

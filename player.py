@@ -51,6 +51,7 @@ class Player:
             raise DeadCard("This card is dead")
         self.cards[position].kill_card()
         self.hand[position] = self.cards[position]
+        return self.cards[position].name
 
     @property
     def alive(self):

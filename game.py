@@ -37,7 +37,9 @@ class Game:
         pass
 
     def add_log(self, txt):
-        self.log.append(txt)
+        if len(txt) != 0:
+            for line in txt:
+                self.log.append(line)
 
     def create_player(self):
         name = str(input("What is your name?"))
@@ -138,6 +140,7 @@ class Game:
                 # YES INITIAL ACTION
             else:
                 print(f"{player.name} does not have {action.name}")
+                print(f"{player.name} loses an influence")
                 player.reveal_card()
                 challenge_success = True
                 # There is challenger
@@ -166,6 +169,7 @@ class Game:
         return counter_attacker
 
     def counter_action(self, player, action):
+        txt = []
         counter_success = False
         counter_attacker = self.ask_counter_action(player, action)
         if counter_attacker:
@@ -203,7 +207,7 @@ class Game:
                     # There is challenger
                     # Challenger loses
                     # NO INITIAL ACTION
-                    return counter_success
+
                 else:
                     print(f"{counter_attacker.name} does not have "
                           f"{self.deck.actions[blocker_final].name}")
@@ -215,7 +219,7 @@ class Game:
                     # There is challenger
                     # Challenger wins
                     # YES INITIAL ACTION
-                    return counter_success
+
             else:
                 if isinstance(action, type(self.deck.actions[4])):
                     player.coins -= 3
@@ -226,13 +230,13 @@ class Game:
                 # There is counterAttacker
                 # There is NO challenger
                 # NO INITIAL ACTION
-                return counter_success
+
         else:
             print(f"{action.name} by {player.name} was not counter attacked.")
             counter_success = False
             # There is NO counterAttacker
             # YES INITIAL ACTION
-            return counter_success
+        return counter_success
 
     def remove_players_from_game(self):
         for player in self.players:
@@ -249,7 +253,9 @@ class Game:
             return False
 
     def start(self):
+        turn = 1
         while len(self.players) > 1:
+            txt = [f"Turn {turn}"]
             for player in self.players:
                 if self.check_winner():
                     continue
@@ -270,21 +276,18 @@ class Game:
 
                     if action == 0:
                         self.deck.actions[action].act(player)
-                        self.add_log(
-                            f"{player.name} used Income, receives 1 coin")
+                        txt.append(f"{player.name} uses Income, "
+                                   "receives 1 coin")
 
                     elif action == 1:
+                        txt.append(f"{player.name} uses Foreign Aid")
                         counter_success = self.counter_action(
                             player, self.deck.actions[action])
                         if counter_success:
                             self.remove_players_from_game()
-                            if self.check_winner():
-                                continue
+                            continue
                         else:
                             self.deck.actions[action].act(player)
-                            self.add_log(
-                                f"{player.name} used Foreign Aid, "
-                                f"receives 2 coins.")
 
                     elif action == 2:
                         if player.coins < 7:
@@ -292,30 +295,30 @@ class Game:
                                 "Not enough coins. Coins required = 7")
                         target = self.choose_target(player)
                         self.deck.actions[action].act(player, target)
-                        self.add_log(f"{target.name} loses an influence due "
-                                     f"to Coup played by {player.name}")
+                        txt.append(f"{player.name} used Coup "
+                                   f"against {target.name}")
 
                     elif action == 3:
+                        txt.append(f"{player.name} uses Taxes")
                         challenge_success = self.challenge(player, action)
                         if challenge_success:
                             self.remove_players_from_game()
-                            if self.check_winner():
-                                continue
+                            continue
                         else:
                             self.deck.actions[action].act(player)
-                            self.add_log(
-                                f"{player.name} used Tax. "
-                                "He received 3 coins.")
+                            txt.append(f"{player.name} receives 3 coins "
+                                       f"from taxes.")
 
                     elif action == 4:
+                        txt.append(f"{player.name} uses Assassinate")
                         if player.coins < 3:
                             raise ValueError(
                                 "Not enough coins. Coins required = 3")
                         challenge_success = self.challenge(player, action)
                         if challenge_success:
                             self.remove_players_from_game()
-                            if self.check_winner():
-                                continue
+                            continue
+
                         counter_action = self.counter_action(
                             player, self.deck.actions[action])
 
@@ -323,27 +326,30 @@ class Game:
                             pass
                         else:
                             target = self.choose_target(player)
-                            self.deck.actions[action].act(player, target)
-                            self.add_log(f"{target.name} lost an Influence "
-                                         f"to an Assassin")
+                            card_killed = self.deck.actions[action].act(player,
+                                                                        target)
+                            txt.append(f"{target.name} lost an Influence: "
+                                       f"{card_killed} to an Assassin")
+                            txt.append(f"{player.name} pays 3 coins "
+                                       f"for Assassination")
 
                     elif action == 5:
+                        txt.append(f"{player.name} used Exchange")
                         challenge_success = self.challenge(player, action)
                         if challenge_success:
                             self.remove_players_from_game()
-                            if self.check_winner():
-                                continue
+                            continue
                         else:
                             self.deck.actions[action].act(player, self.deck)
-                            self.add_log(f"{player.name} used Exchange to "
-                                         f"swap cards with the Court Deck")
+                            txt.append(f"{player.name} exchanged cards "
+                                       f"with the Court Deck")
 
                     elif action == 6:
+                        txt.append(f"{player.name} uses Steal")
                         challenge_success = self.challenge(player, action)
                         if challenge_success:
                             self.remove_players_from_game()
-                            if self.check_winner():
-                                continue
+                            continue
                         else:
                             counter_action = self.counter_action(
                                 player, self.deck.actions[action])
@@ -353,10 +359,13 @@ class Game:
                                 target = self.choose_target(player)
                                 steal = self.deck.actions[action].act(
                                                                 player, target)
-                                self.add_log(f"{player.name} stole {steal} "
-                                             f"coins from {target.name}")
+                                txt.append(f"{player.name} stole {steal} "
+                                           f"coins from {target.name}")
 
                     self.remove_players_from_game()
                     wait = input("Press enter for next turn")
                     print("\n" * 100)
+            self.add_log(txt)
+            self.add_log(["\n"])
+            turn += 1
         print(f"{self.players[0].name} wins")
